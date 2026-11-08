@@ -1,0 +1,492 @@
+<!-- Chess Platform -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chess Platform</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <svg class="piece-definitions" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <symbol id="piece-p" viewBox="0 0 100 100">
+        <circle cx="50" cy="24" r="13" fill="currentColor" stroke="#182019" stroke-width="2.5"/>
+        <path d="M42 39h16c0 10 3 16 10 23 4 4 7 9 8 15H24c1-6 4-11 8-15 7-7 10-13 10-23Z" fill="currentColor" stroke="#182019" stroke-linejoin="round" stroke-width="2.5"/>
+        <path d="M36 67h28M30 78h40" fill="none" stroke="#d6ad66" stroke-linecap="round" stroke-width="3"/>
+        <path d="M20 79h60l5 8H15Z" fill="currentColor" stroke="#182019" stroke-linejoin="round" stroke-width="2.5"/>
+      </symbol>
+      <symbol id="piece-r" viewBox="0 0 100 100">
+        <path d="M28 17h12v10h20V17h12v10h10v12H18V27h10Z" fill="currentColor" stroke="#182019" stroke-linejoin="round" stroke-width="2.5"/>
+        <path d="M25 40h50l-5 31H30Z" fill="currentColor" stroke="#182019" stroke-linejoin="round" stroke-width="2.5"/>
+        <path d="M35 44v21m15-21v21m15-21v21M29 73h42" fill="none" stroke="#d6ad66" stroke-linecap="round" stroke-width="3"/>
+        <path d="M22 76h56l7 10H15Z" fill="currentColor" stroke="#182019" stroke-linejoin="round" stroke-width="2.5"/>
+      </symbol>
+      <symbol id="piece-n" viewBox="0 0 100 100">
+        <path d="M20 78h63l5 8H14Z" fill="currentColor" stroke="#182019" stroke-linejoin="round" stroke-width="2.5"/>
+        <path d="M27 75c4-12 9-21 19-30l-9-9 4-18 17 13c14 2 24 11 27 24l4 20Z" fill="currentColor" stroke="#182019" stroke-linejoin="round" stroke-width="2.5"/>
+        <path d="m41 35 9 5-11 8-8-7Z" fill="#d6ad66" stroke="#182019" stroke-linejoin="round" stroke-width="2"/>
+        <circle cx="65" cy="42" r="2.8" fill="#d6ad66"/>
+        <path d="M41 69h36" fill="none" stroke="#d6ad66" stroke-linecap="round" stroke-width="3"/>
+      </symbol>
+      <symbol id="piece-b" viewBox="0 0 100 100">
+        <path d="M50 14c-11 8-17 16-17 25 0 7 4 12 9 16-2 7-7 13-14 18h44c-7-5-12-11-14-18 5-4 9-9 9-16 0-9-6-17-17-25Z" fill="currentColor" stroke="#182019" stroke-linejoin="round" stroke-width="2.5"/>
+        <path d="m43 27 14 17M33 72h34" fill="none" stroke="#d6ad66" stroke-linecap="round" stroke-width="3"/>
+        <path d="M24 76h52l8 10H16Z" fill="currentColor" stroke="#182019" stroke-linejoin="round" stroke-width="2.5"/>
+        <circle cx="50" cy="14" r="4" fill="#d6ad66"/>
+      </symbol>
+      <symbol id="piece-q" viewBox="0 0 100 100">
+        <path d="m24 37 15 13 11-25 11 25 15-13-5 31H29Z" fill="currentColor" stroke="#182019" stroke-linejoin="round" stroke-width="2.5"/>
+        <path d="M31 72h38M26 78h48" fill="none" stroke="#d6ad66" stroke-linecap="round" stroke-width="3"/>
+        <path d="M22 77h56l7 9H15Z" fill="currentColor" stroke="#182019" stroke-linejoin="round" stroke-width="2.5"/>
+        <circle cx="24" cy="33" r="5" fill="#d6ad66"/>
+        <circle cx="50" cy="22" r="5" fill="#d6ad66"/>
+        <circle cx="76" cy="33" r="5" fill="#d6ad66"/>
+      </symbol>
+      <symbol id="piece-k" viewBox="0 0 100 100">
+        <path d="M45 13h10v10h10v10H55v10H45V33H35V23h10Z" fill="#d6ad66" stroke="#182019" stroke-linejoin="round" stroke-width="2"/>
+        <path d="M31 47h38c0 9 2 16 7 24H24c5-8 7-15 7-24Z" fill="currentColor" stroke="#182019" stroke-linejoin="round" stroke-width="2.5"/>
+        <path d="M32 68h36M29 75h42" fill="none" stroke="#d6ad66" stroke-linecap="round" stroke-width="3"/>
+        <path d="M22 77h56l7 9H15Z" fill="currentColor" stroke="#182019" stroke-linejoin="round" stroke-width="2.5"/>
+      </symbol>
+    </svg>
+    <main class="game-shell">
+      <header class="game-header">
+        <div>
+          <p class="eyebrow">CHESS ANALYSIS WORKSPACE</p>
+          <h1>Chess<span>.</span></h1>
+          <p class="game-subtitle">Explore positions and compare engine lines.</p>
+        </div>
+        <button id="reset-button" type="button">
+          <span aria-hidden="true">&#8634;</span>
+          Reset board
+        </button>
+      </header>
+
+      <section class="account-panel" aria-labelledby="account-title">
+        <div class="account-heading">
+          <div>
+            <p class="board-label">YOUR ACCOUNT</p>
+            <h2 id="account-title">Sync your chess studies</h2>
+          </div>
+          <div id="account-signed-in" class="account-signed-in" hidden>
+            <span id="account-identity"></span>
+            <button id="account-change-password-toggle" class="account-secondary-button" type="button">Change password</button>
+            <button id="account-signout-button" class="account-secondary-button" type="button">Sign out</button>
+          </div>
+        </div>
+        <form id="account-form" class="account-form">
+          <label id="account-name-field" for="account-name" hidden>
+            Display name
+            <input id="account-name" type="text" maxlength="60" autocomplete="name" placeholder="How should we address you?" />
+          </label>
+          <label for="account-email">
+            Email
+            <input id="account-email" type="email" autocomplete="email" required placeholder="you@example.com" />
+          </label>
+          <label for="account-password">
+            Password
+            <input id="account-password" type="password" minlength="8" autocomplete="current-password" required placeholder="At least 8 characters" />
+          </label>
+          <button id="account-submit-button" class="account-primary-button" type="submit">Sign in</button>
+          <div class="account-links">
+            <button id="account-mode-button" type="button">Create an account</button>
+            <button id="account-reset-button" type="button">Forgot password?</button>
+          </div>
+        </form>
+        <form id="account-password-form" class="account-password-form" hidden>
+          <label for="account-new-password">
+            New password
+            <input id="account-new-password" type="password" minlength="8" autocomplete="new-password" required placeholder="At least 8 characters" />
+          </label>
+          <button class="account-secondary-button" type="submit">Update password</button>
+        </form>
+        <p id="account-status" class="account-status" role="status" aria-live="polite"></p>
+      </section>
+
+      <div class="game-layout">
+        <aside class="evaluation-panel" aria-label="Stockfish evaluation">
+          <span class="evaluation-label">ENGINE</span>
+          <span id="evaluation-value" class="evaluation-value" aria-live="off">—</span>
+          <div
+            id="evaluation-meter"
+            class="evaluation-meter"
+            role="meter"
+            aria-label="Position evaluation for White"
+            aria-valuemin="-1000"
+            aria-valuemax="1000"
+            aria-valuenow="0"
+            aria-valuetext="Waiting for analysis"
+          >
+            <div id="evaluation-fill" class="evaluation-fill"></div>
+          </div>
+          <p id="engine-status" class="engine-status">Loading Stockfish…</p>
+        </aside>
+
+        <section id="game-panel" class="game-panel" aria-label="Chess game">
+          <div class="board-topline">
+            <span class="board-label">CURRENT POSITION</span>
+            <p id="game-status" aria-live="polite"></p>
+          </div>
+          <div class="board-frame">
+            <div id="chessboard" aria-label="Chess board"></div>
+          </div>
+          <p class="game-hint">Select a piece to see its legal moves. Right-click two squares to draw or remove an arrow. Use ←/→ to step through moves and ↑/↓ to jump to the start/end.</p>
+          <div class="annotation-toolbar" aria-label="Board annotations">
+            <button type="button" data-annotation-tool="highlight" aria-pressed="false">Highlight square</button>
+            <label class="annotation-color-control" for="annotation-color">
+              Color
+              <select id="annotation-color">
+                <option value="gold">Gold</option>
+                <option value="green">Green</option>
+                <option value="red">Red</option>
+              </select>
+            </label>
+            <button id="clear-annotations-button" type="button">Clear marks</button>
+          </div>
+          <p id="annotation-status" class="tool-description" role="status">Right-click a start square and then a destination to add an arrow. Click Highlight square to mark squares.</p>
+        </section>
+
+        <aside class="history-panel" aria-labelledby="history-title">
+          <div class="history-header">
+            <div>
+              <p class="board-label">THIS MATCH</p>
+              <h2 id="history-title">Analysis tree</h2>
+            </div>
+            <span id="move-count" class="move-count">0</span>
+          </div>
+          <div class="history-navigation" aria-label="Move navigation">
+            <button type="button" data-navigation="start" aria-label="Go to start" aria-keyshortcuts="ArrowUp">|&lt;</button>
+            <button type="button" data-navigation="previous" aria-label="Go back one move" aria-keyshortcuts="ArrowLeft">&lt;</button>
+            <span id="current-ply">Start position</span>
+            <button type="button" data-navigation="next" aria-label="Go forward one move" aria-keyshortcuts="ArrowRight">&gt;</button>
+            <button type="button" data-navigation="end" aria-label="Go to latest move" aria-keyshortcuts="ArrowDown">&gt;|</button>
+          </div>
+          <p class="history-shortcuts">Keys: ← previous · → next · ↑ start · ↓ end</p>
+          <div id="opening-notation" class="opening-notation" role="status" aria-live="polite">
+            <span>OPENING</span>
+            <strong>Opening position</strong>
+          </div>
+          <ol id="move-history" class="move-history" aria-live="polite"></ol>
+          <p id="history-empty" class="history-empty">Moves will appear here as you play.</p>
+          <section class="variation-section" aria-labelledby="variation-title">
+            <h3 id="variation-title">Lines &amp; variations</h3>
+            <div id="variations-tree" class="variations-tree"></div>
+          </section>
+          <form id="comment-form" class="comment-form">
+            <label for="position-comment">Position comment</label>
+            <textarea id="position-comment" rows="3" placeholder="Add a note about this position…"></textarea>
+            <span id="comment-status" class="comment-status" role="status">Attached to this position; save the collection to persist it.</span>
+          </form>
+          <p class="history-notation">Hover a symbol to see the move annotation.</p>
+        </aside>
+      </div>
+
+      <section class="analysis-dashboard" aria-label="Position analysis tools">
+        <section class="tool-panel opening-trainer-panel" aria-labelledby="opening-trainer-title">
+          <div class="tool-panel-header">
+            <div>
+              <p class="board-label">ACTIVE RECALL</p>
+              <h2 id="opening-trainer-title">Opening trainer</h2>
+            </div>
+          </div>
+          <p class="tool-description">Practice the next move in openings from your imported games. The board becomes your quiz—try to recall the move before asking for a hint.</p>
+          <div class="opening-trainer-controls">
+            <label for="opening-trainer-select">Your opening repertoire
+              <select id="opening-trainer-select">
+                <option value="">Import games to build your repertoire</option>
+              </select>
+            </label>
+            <button id="opening-trainer-start" class="secondary-button" type="button" disabled>Start practice</button>
+            <button id="opening-trainer-hint" class="secondary-button" type="button" disabled>Show hint</button>
+          </div>
+          <p id="opening-trainer-status" class="tool-description" role="status">Import PGN games to build opening lines from your own play.</p>
+        </section>
+
+        <section class="tool-panel game-library-panel" aria-labelledby="game-library-title">
+          <div class="tool-panel-header">
+            <div>
+              <p class="board-label">YOUR GAMES</p>
+              <h2 id="game-library-title">Personal game insights</h2>
+            </div>
+          </div>
+          <p class="tool-description">Import PGN games to see your opening habits and results. Add the exact player name used in the PGN headers to calculate your personal win, draw, and loss record.</p>
+          <form id="game-library-form" class="load-form">
+            <label for="game-library-player">Your player name in these PGNs (optional)</label>
+            <input id="game-library-player" type="text" maxlength="100" autocomplete="off" placeholder="For example, your Chess.com or Lichess username" />
+            <label for="game-library-pgn">Paste one or more PGN games</label>
+            <textarea id="game-library-pgn" rows="7" maxlength="500000" required placeholder='[Event "Casual Game"]
+[White "YourName"]
+[Black "Opponent"]
+[Result "1-0"]
+
+1. e4 e5 2. Nf3 Nc6 1-0'></textarea>
+            <button type="submit">Import games</button>
+          </form>
+          <form id="game-account-import-form" class="load-form game-account-import-form">
+            <label for="game-import-platform">Import public games from</label>
+            <div class="form-row">
+              <select id="game-import-platform">
+                <option value="lichess">Lichess</option>
+                <option value="chesscom">Chess.com</option>
+              </select>
+              <input id="game-import-username" type="text" maxlength="100" autocomplete="off" placeholder="Player username" required />
+            </div>
+            <div class="form-row game-import-submit-row">
+              <label for="game-import-count">Recent games
+                <select id="game-import-count">
+                  <option value="10">10</option>
+                  <option value="25" selected>25</option>
+                  <option value="50">50</option>
+                </select>
+              </label>
+              <button type="submit">Import account games</button>
+            </div>
+          </form>
+          <p id="game-library-sync-warning" class="sync-warning" role="status" hidden></p>
+          <p id="game-library-status" class="tool-description" role="status">Games stay in this browser unless you sign in to sync them with your account.</p>
+          <div id="game-library-insights" class="game-library-insights" aria-live="polite"></div>
+          <ol id="game-library-list" class="game-library-list"></ol>
+        </section>
+
+        <section class="tool-panel progress-dashboard-panel" aria-labelledby="progress-dashboard-title">
+          <div class="tool-panel-header">
+            <div>
+              <p class="board-label">YOUR IMPROVEMENT</p>
+              <h2 id="progress-dashboard-title">Progress dashboard</h2>
+            </div>
+          </div>
+          <div id="progress-dashboard" class="progress-dashboard" aria-live="polite"></div>
+        </section>
+
+        <section class="tool-panel study-goals-panel" aria-labelledby="study-goals-title">
+          <div class="tool-panel-header">
+            <div>
+              <p class="board-label">BUILD A HABIT</p>
+              <h2 id="study-goals-title">Weekly study goals</h2>
+            </div>
+          </div>
+          <p class="tool-description">Choose realistic weekly targets. Progress updates as you review games and practice your positions.</p>
+          <form id="study-goals-form" class="study-goals-form">
+            <label for="study-goal-reviews">Game reviews per week
+              <input id="study-goal-reviews" type="number" min="1" max="50" step="1" />
+            </label>
+            <label for="study-goal-mistakes">Mistake positions to solve
+              <input id="study-goal-mistakes" type="number" min="1" max="100" step="1" />
+            </label>
+            <label for="study-goal-openings">Opening practice sessions
+              <input id="study-goal-openings" type="number" min="1" max="50" step="1" />
+            </label>
+            <button type="submit">Save weekly goals</button>
+          </form>
+          <div id="study-goals-progress" class="study-goals-progress" aria-live="polite"></div>
+          <p id="study-goals-status" class="tool-description" role="status"></p>
+        </section>
+
+        <section class="tool-panel" aria-labelledby="review-title">
+          <div class="tool-panel-header">
+            <div>
+              <p class="board-label">STOCKFISH GAME REVIEW</p>
+              <h2 id="review-title">Game review &amp; practice</h2>
+            </div>
+            <button id="review-game-button" class="secondary-button" type="button">Review game</button>
+          </div>
+          <p id="review-status" class="tool-description">Analyze game positions to estimate move quality and accuracy.</p>
+          <div id="review-summary" class="review-summary" aria-live="polite"></div>
+          <div id="review-report" class="review-report" aria-live="polite"></div>
+          <ol id="review-moments" class="review-moments"></ol>
+          <section id="mistake-practice-section" class="mistake-practice-section" aria-labelledby="mistake-practice-title" hidden>
+            <h3 id="mistake-practice-title">Your practice queue</h3>
+            <p class="tool-description">Replay the position and find Stockfish’s recommended move. Solved positions are checked off.</p>
+            <ol id="mistake-practice-queue" class="mistake-practice-queue"></ol>
+          </section>
+          <p id="practice-status" class="tool-description" role="status">Choose a mistake to retry its position.</p>
+          <p class="tool-description">Coach insights use Stockfish's best moves and board state with readable rule-based explanations; move labels and accuracy are estimates, not official CAPS ratings.</p>
+          <button id="save-insight-button" class="secondary-button" type="button">Save review to history</button>
+          <p id="insight-history" class="tool-description">Review snapshots will appear here.</p>
+        </section>
+
+        <section class="tool-panel" aria-labelledby="lines-title">
+          <div class="tool-panel-header">
+            <div>
+              <p class="board-label">STOCKFISH</p>
+              <h2 id="lines-title">Candidate lines</h2>
+            </div>
+            <div class="engine-controls">
+              <label class="multipv-control" for="multipv-select">
+                Lines
+                <select id="multipv-select">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3" selected>3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </label>
+              <label class="depth-control" for="engine-depth">
+                Depth <output id="engine-depth-value" for="engine-depth">12</output>
+                <input id="engine-depth" type="range" min="8" max="24" step="1" value="12" />
+              </label>
+            </div>
+          </div>
+          <p id="lines-status" class="tool-description">Analyzing the current position…</p>
+          <ol id="candidate-lines" class="candidate-lines"></ol>
+          <button id="analyze-game-button" class="secondary-button" type="button">Analyze all game positions</button>
+          <p class="tool-description">Stockfish 19 Lite is running locally. Komodo is not included because it requires a separate license.</p>
+        </section>
+
+        <section class="tool-panel" aria-labelledby="load-position-title">
+          <div class="tool-panel-header">
+            <div>
+              <p class="board-label">POSITION TOOLS</p>
+              <h2 id="load-position-title">Load a position</h2>
+            </div>
+          </div>
+          <form id="fen-form" class="load-form">
+            <label for="fen-input">FEN</label>
+            <div class="form-row">
+              <input id="fen-input" type="text" autocomplete="off" placeholder="Paste a FEN position" />
+              <button type="submit">Load</button>
+            </div>
+          </form>
+          <form id="pgn-form" class="load-form">
+            <label for="pgn-input">PGN game</label>
+            <textarea id="pgn-input" rows="5" placeholder="Paste a PGN game to analyze"></textarea>
+            <button type="submit">Load PGN</button>
+          </form>
+          <div class="setup-tools">
+            <h3>Custom board</h3>
+            <div class="setup-controls">
+              <label for="setup-piece">Piece</label>
+              <select id="setup-piece">
+                <option value="erase">Erase</option>
+                <option value="k">King</option>
+                <option value="q">Queen</option>
+                <option value="r">Rook</option>
+                <option value="b">Bishop</option>
+                <option value="n">Knight</option>
+                <option value="p" selected>Pawn</option>
+              </select>
+              <label for="setup-color">Color</label>
+              <select id="setup-color">
+                <option value="w">White</option>
+                <option value="b">Black</option>
+              </select>
+              <label for="setup-turn">Turn</label>
+              <select id="setup-turn">
+                <option value="w">White to move</option>
+                <option value="b">Black to move</option>
+              </select>
+              <span class="setup-option-label">Castling</span>
+              <div class="setup-castling">
+                <label><input id="setup-castle-K" type="checkbox" /> White O-O</label>
+                <label><input id="setup-castle-Q" type="checkbox" /> White O-O-O</label>
+                <label><input id="setup-castle-k" type="checkbox" /> Black O-O</label>
+                <label><input id="setup-castle-q" type="checkbox" /> Black O-O-O</label>
+              </div>
+              <label for="setup-en-passant">En passant</label>
+              <input id="setup-en-passant" type="text" maxlength="2" placeholder="—" />
+            </div>
+            <div class="setup-actions">
+              <button id="setup-start-button" class="secondary-button" type="button">Edit current position</button>
+              <button id="setup-clear-button" class="secondary-button" type="button">Clear board</button>
+              <button id="setup-apply-button" class="secondary-button" type="button" disabled>Use position</button>
+              <button id="setup-cancel-button" class="secondary-button" type="button" hidden>Cancel</button>
+            </div>
+            <p id="setup-status" class="tool-description" role="status">Place pieces, choose the side to move and optional rights, then use the position.</p>
+          </div>
+          <p id="load-status" class="tool-description" role="status">Load a position or game to analyze it.</p>
+        </section>
+
+        <section class="tool-panel" aria-labelledby="annotations-title">
+          <div class="tool-panel-header">
+            <div>
+              <p class="board-label">YOUR STUDY</p>
+              <h2 id="annotations-title">Analysis collections</h2>
+            </div>
+          </div>
+          <form id="collection-form" class="load-form">
+            <label for="collection-name">Save this analysis</label>
+            <div class="form-row">
+              <input id="collection-name" type="text" maxlength="60" placeholder="Collection name" required />
+              <button type="submit">Save</button>
+            </div>
+          </form>
+          <label class="collection-label" for="collection-list">Saved collections</label>
+          <div class="form-row">
+            <select id="collection-list" aria-label="Saved collections"></select>
+            <button id="load-collection-button" type="button">Open</button>
+            <button id="delete-collection-button" type="button">Delete</button>
+          </div>
+          <p id="collection-status" class="tool-description" role="status">Collections are stored in this browser.</p>
+        </section>
+
+        <section class="tool-panel explorer-panel" aria-labelledby="explorer-title">
+          <div class="tool-panel-header">
+            <div>
+              <p class="board-label">LICHESS MASTERS · OAUTH</p>
+              <h2 id="explorer-title">Opening explorer</h2>
+            </div>
+          </div>
+          <form id="explorer-auth-form" class="explorer-auth-form">
+            <label for="explorer-token">Optional Lichess token</label>
+            <div class="form-row">
+              <input id="explorer-token" type="password" autocomplete="off" spellcheck="false" placeholder="Paste a personal token to enable live data" />
+              <button type="submit">Connect</button>
+            </div>
+            <small>
+              Sent only to Lichess and kept in memory until you refresh.
+              <a href="https://lichess.org/account/oauth/token" target="_blank" rel="noopener noreferrer">Create a token</a>.
+            </small>
+            <button id="explorer-disconnect-button" class="explorer-disconnect" type="button" hidden>Disconnect</button>
+          </form>
+          <p id="explorer-summary" class="tool-description">Connect a Lichess token to load Masters database statistics.</p>
+          <ol id="explorer-moves" class="explorer-moves"></ol>
+          <h3 class="explorer-subtitle">Sample master games</h3>
+          <ol id="explorer-games" class="explorer-games"></ol>
+        </section>
+
+        <section class="tool-panel" aria-labelledby="tablebase-title">
+          <div class="tool-panel-header">
+            <div>
+              <p class="board-label">SYZYGY TABLEBASE</p>
+              <h2 id="tablebase-title">Endgame oracle</h2>
+            </div>
+          </div>
+          <p id="tablebase-status" class="tool-description" role="status">Checking position eligibility…</p>
+          <ol id="tablebase-moves" class="candidate-lines"></ol>
+          <p class="tool-description">Uses Lichess's public tablebase service for positions with up to 7 pieces; requires an internet connection.</p>
+        </section>
+
+        <section class="tool-panel" aria-labelledby="insights-title">
+          <div class="tool-panel-header">
+            <div>
+              <p class="board-label">POSITION INSIGHTS</p>
+              <h2 id="insights-title">Tactics &amp; phases</h2>
+            </div>
+            <button id="show-tactics-button" class="secondary-button" type="button" aria-pressed="false">Show tactics on board</button>
+          </div>
+          <div id="position-insights" class="position-insights" aria-live="polite"></div>
+        </section>
+      </section>
+      <footer class="page-footer">Explore a line. Study a game. Find a better move.</footer>
+    </main>
+    <dialog id="promotion-dialog" class="promotion-dialog" aria-labelledby="promotion-title">
+      <form method="dialog" class="promotion-form">
+        <p class="board-label">PAWN PROMOTION</p>
+        <h2 id="promotion-title">Choose your piece</h2>
+        <label for="promotion-choice">Promote to</label>
+        <select id="promotion-choice" name="promotion">
+          <option value="q">Queen</option>
+          <option value="r">Rook</option>
+          <option value="b">Bishop</option>
+          <option value="n">Knight</option>
+        </select>
+        <div class="promotion-actions">
+          <button type="submit" value="cancel" class="promotion-cancel">Cancel</button>
+          <button type="submit" value="promote" class="promotion-confirm">Promote</button>
+        </div>
+      </form>
+    </dialog>
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>

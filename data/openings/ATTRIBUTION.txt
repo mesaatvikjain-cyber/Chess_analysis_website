@@ -1,0 +1,7 @@
+Opening names and ECO data are from lichess-org/chess-openings:
+https://github.com/lichess-org/chess-openings
+
+The source dataset is dedicated to the public domain under CC0 1.0 Universal.
+The bundled opening-index.json is generated from the five ECO volume TSV files
+in this directory using scripts/build-opening-db.js. Regenerate it with
+`npm run build:opening-db`.
